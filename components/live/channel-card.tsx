@@ -36,7 +36,7 @@ export function ChannelCard({ channel, featured = false }: ChannelCardProps) {
         <Card className={`group relative overflow-hidden hover-lift ${featured ? "h-full" : ""}`}>
           {playing && selectedStream ? (
             <div className="relative">
-              <VideoPlayer source={selectedStream} autoPlay />
+              <VideoPlayer sources={[selectedStream]} autoPlay />
               <Button
                 variant="ghost"
                 size="sm"

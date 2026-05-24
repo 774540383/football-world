@@ -36,6 +36,15 @@ export interface MatchStream {
   language: string;
   languageAr: string;
   isFeatured: boolean;
+  autoFailover: boolean;
+  healthCheckUrl?: string;
+}
+
+export interface StreamHealth {
+  sourceId: string;
+  status: "online" | "offline" | "degraded";
+  latency: number;
+  lastChecked: number;
 }
 
 export const FALLBACK_CHANNELS: Channel[] = [
@@ -175,6 +184,7 @@ export const FALLBACK_MATCH_STREAMS: MatchStream[] = [
     language: "Arabic",
     languageAr: "العربية",
     isFeatured: true,
+    autoFailover: true,
   },
   {
     id: "ms2",
@@ -183,11 +193,13 @@ export const FALLBACK_MATCH_STREAMS: MatchStream[] = [
     titleAr: "الكلاسيكو - مباشر",
     sources: [
       { id: "ms2s1", name: "HD Stream", nameAr: "بث عالي الجودة", type: "youtube", url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", quality: ["1080p", "720p"] },
+      { id: "ms2s2", name: "Backup", nameAr: "بث احتياطي", type: "hls", url: "https://example.com/stream2/playlist.m3u8", quality: ["720p", "480p"] },
     ],
     isLive: true,
     language: "Arabic",
     languageAr: "العربية",
     isFeatured: true,
+    autoFailover: true,
   },
 ];
 

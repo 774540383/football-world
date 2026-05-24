@@ -97,7 +97,7 @@ export function MatchStreamSection({ matchId, homeTeam, awayTeam }: MatchStreamS
       </div>
 
       <div className="bg-black">
-        <VideoPlayer source={displaySource} autoPlay />
+        <VideoPlayer sources={[displaySource]} autoPlay />
       </div>
 
       {displaySource.quality && displaySource.quality.length > 0 && (
