@@ -12,42 +12,21 @@ export default async function sitemap() {
     { url: `${BASE_URL}/news`, lastModified: new Date(), changeFrequency: "hourly" as const, priority: 0.8 },
   ];
 
-  const news = await prisma.news.findMany({
-    select: { slug: true, updatedAt: true },
-    where: { published: true },
-    take: 100,
-  });
+  try {
+    const [news, teams, matches] = await Promise.all([
+      prisma.news.findMany({ select: { slug: true, updatedAt: true }, where: { published: true }, take: 100 }).catch(() => []),
+      prisma.team.findMany({ select: { id: true, updatedAt: true }, take: 100 }).catch(() => []),
+      prisma.match.findMany({ select: { id: true, updatedAt: true }, take: 200 }).catch(() => []),
+    ]);
 
-  const newsPages = news.map((n) => ({
-    url: `${BASE_URL}/news/${n.slug}`,
-    lastModified: n.updatedAt,
-    changeFrequency: "weekly" as const,
-    priority: 0.6,
-  }));
+    const dynamicPages = [
+      ...news.map((n) => ({ url: `${BASE_URL}/news/${n.slug}`, lastModified: n.updatedAt, changeFrequency: "weekly" as const, priority: 0.6 })),
+      ...teams.map((t) => ({ url: `${BASE_URL}/team/${t.id}`, lastModified: t.updatedAt, changeFrequency: "daily" as const, priority: 0.5 })),
+      ...matches.map((m) => ({ url: `${BASE_URL}/match/${m.id}`, lastModified: m.updatedAt, changeFrequency: "always" as const, priority: 0.7 })),
+    ];
 
-  const teams = await prisma.team.findMany({
-    select: { id: true, updatedAt: true },
-    take: 100,
-  });
-
-  const teamPages = teams.map((t) => ({
-    url: `${BASE_URL}/team/${t.id}`,
-    lastModified: t.updatedAt,
-    changeFrequency: "daily" as const,
-    priority: 0.5,
-  }));
-
-  const matches = await prisma.match.findMany({
-    select: { id: true, updatedAt: true },
-    take: 200,
-  });
-
-  const matchPages = matches.map((m) => ({
-    url: `${BASE_URL}/match/${m.id}`,
-    lastModified: m.updatedAt,
-    changeFrequency: "always" as const,
-    priority: 0.7,
-  }));
-
-  return [...staticPages, ...newsPages, ...teamPages, ...matchPages];
+    return [...staticPages, ...dynamicPages];
+  } catch {
+    return staticPages;
+  }
 }
