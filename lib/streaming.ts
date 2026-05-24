@@ -10,6 +10,8 @@ export interface StreamSource {
   poster?: string;
   quality?: string[];
   backupUrls?: string[];
+  viaProxy?: boolean;
+  proxyId?: string;
 }
 
 export interface Channel {
@@ -47,6 +49,12 @@ export interface StreamHealth {
   lastChecked: number;
 }
 
+export const PUBLIC_TEST_STREAMS: StreamSource[] = [
+  { id: "test-hls-1", name: "Test HLS (Apple)", nameAr: "اختبار HLS", type: "hls", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", quality: ["1080p", "720p", "480p", "360p"] },
+  { id: "test-hls-2", name: "Test HLS (Mux)", nameAr: "اختبار HLS 2", type: "hls", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", quality: ["720p", "480p"] },
+  { id: "test-hls-3", name: "Big Buck Bunny", nameAr: "بث تجريبي", type: "hls", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", quality: ["1080p"] },
+];
+
 export const FALLBACK_CHANNELS: Channel[] = [
   {
     id: "ch1",
@@ -56,7 +64,8 @@ export const FALLBACK_CHANNELS: Channel[] = [
     category: "sports",
     categoryAr: "رياضية",
     streams: [
-      { id: "s1", name: "Main Stream", nameAr: "البث الرئيسي", type: "youtube", url: "https://www.youtube.com/watch?v=VIDEO_ID", poster: "", quality: ["1080p", "720p", "480p"] },
+      { id: "s1", name: "Test Stream 1", nameAr: "بث تجريبي 1", type: "hls", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", poster: "", quality: ["1080p", "720p", "480p"] },
+      { id: "s1b", name: "Test Stream 2", nameAr: "بث تجريبي 2", type: "hls", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", poster: "", quality: ["720p", "480p"] },
     ],
     active: true,
     isFree: false,
@@ -71,7 +80,7 @@ export const FALLBACK_CHANNELS: Channel[] = [
     category: "sports",
     categoryAr: "رياضية",
     streams: [
-      { id: "s2", name: "YouTube Live", nameAr: "يوتيوب مباشر", type: "youtube", url: "https://www.youtube.com/watch?v=alkass", poster: "" },
+      { id: "s2", name: "Test HLS", nameAr: "بث تجريبي HLS", type: "hls", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", poster: "" },
     ],
     active: true,
     isFree: true,
@@ -86,7 +95,7 @@ export const FALLBACK_CHANNELS: Channel[] = [
     category: "sports",
     categoryAr: "رياضية",
     streams: [
-      { id: "s3", name: "Main Stream", nameAr: "البث الرئيسي", type: "hls", url: "https://example.com/ssc/playlist.m3u8", poster: "", quality: ["1080p", "720p"] },
+      { id: "s3", name: "Main Stream", nameAr: "البث الرئيسي", type: "hls", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", poster: "", quality: ["1080p", "720p"] },
     ],
     active: true,
     isFree: false,
@@ -101,7 +110,8 @@ export const FALLBACK_CHANNELS: Channel[] = [
     category: "sports",
     categoryAr: "رياضية",
     streams: [
-      { id: "s4", name: "YouTube", nameAr: "يوتيوب", type: "youtube", url: "https://www.youtube.com/@ADSportsTV", poster: "" },
+      { id: "s4", name: "Test Stream", nameAr: "بث تجريبي", type: "hls", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", poster: "", quality: ["1080p", "720p", "480p", "360p"] },
+      { id: "s4b", name: "Backup", nameAr: "احتياطي", type: "hls", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", poster: "" },
     ],
     active: true,
     isFree: true,
@@ -116,7 +126,7 @@ export const FALLBACK_CHANNELS: Channel[] = [
     category: "sports",
     categoryAr: "رياضية",
     streams: [
-      { id: "s5", name: "Main Stream", nameAr: "البث الرئيسي", type: "hls", url: "https://example.com/skysports/playlist.m3u8", poster: "", quality: ["1080p", "720p", "480p"] },
+      { id: "s5", name: "Main Stream", nameAr: "البث الرئيسي", type: "hls", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", poster: "", quality: ["1080p", "720p", "480p"] },
     ],
     active: true,
     isFree: false,
@@ -131,7 +141,7 @@ export const FALLBACK_CHANNELS: Channel[] = [
     category: "sports",
     categoryAr: "رياضية",
     streams: [
-      { id: "s6", name: "Main Stream", nameAr: "البث الرئيسي", type: "hls", url: "https://example.com/espn/playlist.m3u8", poster: "" },
+      { id: "s6", name: "Test HLS", nameAr: "بث تجريبي", type: "hls", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", poster: "", quality: ["720p", "480p"] },
     ],
     active: true,
     isFree: false,
@@ -146,7 +156,7 @@ export const FALLBACK_CHANNELS: Channel[] = [
     category: "sports",
     categoryAr: "رياضية",
     streams: [
-      { id: "s7", name: "YouTube", nameAr: "يوتيوب", type: "youtube", url: "https://www.youtube.com/@MBCSports", poster: "" },
+      { id: "s7", name: "Test HLS", nameAr: "بث تجريبي", type: "hls", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", poster: "", quality: ["1080p", "720p"] },
     ],
     active: true,
     isFree: true,
@@ -155,18 +165,19 @@ export const FALLBACK_CHANNELS: Channel[] = [
   },
   {
     id: "ch8",
-    name: "TV3 Sport",
-    nameAr: "تي في 3 سبورت",
+    name: "FIFA+ Test",
+    nameAr: "تجربة FIFA+",
     logo: "",
     category: "sports",
     categoryAr: "رياضية",
     streams: [
-      { id: "s8", name: "HLS Stream", nameAr: "بث HLS", type: "hls", url: "https://example.com/tv3/playlist.m3u8", poster: "" },
+      { id: "s8", name: "Test HLS", nameAr: "بث تجريبي", type: "hls", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", poster: "", quality: ["1080p", "720p", "480p"] },
+      { id: "s8b", name: "Backup", nameAr: "احتياطي", type: "hls", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", poster: "" },
     ],
     active: true,
-    isFree: false,
-    country: "Denmark",
-    countryAr: "الدنمارك",
+    isFree: true,
+    country: "International",
+    countryAr: "عالمي",
   },
 ];
 
@@ -177,8 +188,8 @@ export const FALLBACK_MATCH_STREAMS: MatchStream[] = [
     title: "Manchester Derby - Live",
     titleAr: "ديربي مانشستر - مباشر",
     sources: [
-      { id: "ms1s1", name: "HD Stream", nameAr: "بث عالي الجودة", type: "youtube", url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", quality: ["1080p", "720p"] },
-      { id: "ms1s2", name: "SD Stream", nameAr: "بث عادي", type: "hls", url: "https://example.com/stream1/playlist.m3u8", quality: ["480p", "360p"] },
+      { id: "ms1s1", name: "HD Stream", nameAr: "بث عالي الجودة", type: "hls", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", quality: ["1080p", "720p"] },
+      { id: "ms1s2", name: "SD Stream", nameAr: "بث عادي", type: "hls", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", quality: ["480p", "360p"] },
     ],
     isLive: true,
     language: "Arabic",
@@ -192,8 +203,8 @@ export const FALLBACK_MATCH_STREAMS: MatchStream[] = [
     title: "El Clasico - Live",
     titleAr: "الكلاسيكو - مباشر",
     sources: [
-      { id: "ms2s1", name: "HD Stream", nameAr: "بث عالي الجودة", type: "youtube", url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", quality: ["1080p", "720p"] },
-      { id: "ms2s2", name: "Backup", nameAr: "بث احتياطي", type: "hls", url: "https://example.com/stream2/playlist.m3u8", quality: ["720p", "480p"] },
+      { id: "ms2s1", name: "HD Stream", nameAr: "بث عالي الجودة", type: "hls", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", quality: ["1080p", "720p"] },
+      { id: "ms2s2", name: "Backup", nameAr: "بث احتياطي", type: "hls", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", quality: ["720p", "480p"] },
     ],
     isLive: true,
     language: "Arabic",
@@ -231,4 +242,47 @@ export function getMatchStreams(matchId: string): MatchStream | undefined {
 
 export function getAllMatchStreams(): MatchStream[] {
   return FALLBACK_MATCH_STREAMS;
+}
+
+export function getProxySourceUrl(source: StreamSource): string {
+  if (typeof window === "undefined") return source.url;
+  try {
+    const raw = localStorage.getItem("football_world_proxy");
+    if (!raw) return source.url;
+    const config = JSON.parse(raw);
+    if (!config.enabled || !config.vpsHost) return source.url;
+    const base = `http://${config.vpsHost}:${config.vpsPort}`;
+    if (config.proxyType === "stream-share") {
+      return `${base}/stream/${source.id}?username=${config.username}&password=${config.password}`;
+    }
+    return `${base}/hls/${source.id}/playlist.m3u8`;
+  } catch {
+    return source.url;
+  }
+}
+
+export function applyProxyToChannels(channels: Channel[]): Channel[] {
+  if (typeof window === "undefined") return channels;
+  try {
+    const raw = localStorage.getItem("football_world_proxy");
+    if (!raw) return channels;
+    const config = JSON.parse(raw);
+    if (!config.enabled || !config.vpsHost) return channels;
+
+    return channels.map((ch) => ({
+      ...ch,
+      streams: ch.streams.map((s) => ({
+        ...s,
+        viaProxy: true,
+        url: getProxySourceUrl(s),
+      })),
+    }));
+  } catch {
+    return channels;
+  }
+}
+
+export function getChannelsWithProxy(): Channel[] {
+  const channels = getChannels();
+  return applyProxyToChannels(channels);
 }

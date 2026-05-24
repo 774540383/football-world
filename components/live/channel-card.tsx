@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Play, Tv, Wifi, WifiOff, Star, ExternalLink } from "lucide-react";
+import { Play, Tv, Wifi, WifiOff, Star, ExternalLink, Server } from "lucide-react";
 import { VideoPlayer } from "@/components/live/video-player";
 import type { Channel, StreamSource } from "@/lib/streaming";
 
@@ -63,6 +63,12 @@ export function ChannelCard({ channel, featured = false }: ChannelCardProps) {
                       <Badge variant="secondary" className="text-[10px] bg-green-500/10 text-green-500">مجاني</Badge>
                     ) : (
                       <Badge variant="outline" className="text-[10px]">مدفوع</Badge>
+                    )}
+                    {channel.streams[0]?.viaProxy && (
+                      <Badge variant="secondary" className="text-[10px] bg-blue-500/10 text-blue-500 flex items-center gap-0.5">
+                        <Server className="w-2.5 h-2.5" />
+                        Proxy
+                      </Badge>
                     )}
                     {featured && <Star className="w-4 h-4 text-yellow-500" />}
                   </div>

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { ChannelCard } from "@/components/live/channel-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getChannels } from "@/lib/streaming";
+import { getChannelsWithProxy } from "@/lib/streaming";
 import { Search, Monitor, Radio, Wifi } from "lucide-react";
 
 const categories = [
@@ -15,14 +15,14 @@ const categories = [
 ];
 
 export default function ChannelsContent() {
-  const [channels, setChannels] = useState<ReturnType<typeof getChannels>>([]);
+  const [channels, setChannels] = useState<ReturnType<typeof getChannelsWithProxy>>([]);
   const [loaded, setLoaded] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
   const [showFreeOnly, setShowFreeOnly] = useState(false);
 
   useEffect(() => {
-    setChannels(getChannels());
+    setChannels(getChannelsWithProxy());
     setLoaded(true);
   }, []);
 
