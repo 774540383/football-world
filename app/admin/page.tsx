@@ -1,16 +1,45 @@
 import { Card } from "@/components/ui/card";
-import { prisma } from "@/lib/prisma";
-import { Calendar, Newspaper, Users, Shield, Eye, TrendingUp } from "lucide-react";
+import { prisma, isPrismaAvailable } from "@/lib/prisma";
+import { Calendar, Newspaper, Users, Shield, Eye } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboard() {
-  const [matchCount, newsCount, userCount, teamCount] = await Promise.all([
-    prisma.match.count(),
-    prisma.news.count(),
-    prisma.user.count(),
-    prisma.team.count(),
-  ]);
+  let matchCount = 0;
+  let newsCount = 0;
+  let userCount = 0;
+  let teamCount = 0;
+  let recentMatches: any[] = [];
+  let recentNews: any[] = [];
+
+  if (isPrismaAvailable()) {
+    try {
+      const results = await Promise.allSettled([
+        prisma.match.count(),
+        prisma.news.count(),
+        prisma.user.count(),
+        prisma.team.count(),
+      ]);
+      matchCount = results[0].status === "fulfilled" ? results[0].value : 0;
+      newsCount = results[1].status === "fulfilled" ? results[1].value : 0;
+      userCount = results[2].status === "fulfilled" ? results[2].value : 0;
+      teamCount = results[3].status === "fulfilled" ? results[3].value : 0;
+
+      recentMatches = await prisma.match.findMany({
+        take: 5,
+        orderBy: { date: "desc" },
+        include: { homeTeam: true, awayTeam: true, league: true },
+      }).catch(() => []);
+
+      recentNews = await prisma.news.findMany({
+        take: 5,
+        orderBy: { createdAt: "desc" },
+        select: { id: true, title: true, createdAt: true, views: true, published: true },
+      }).catch(() => []);
+    } catch {
+      // DB not available
+    }
+  }
 
   const stats = [
     { label: "المباريات", value: matchCount, icon: Calendar, color: "text-blue-500", bg: "bg-blue-500/10" },
@@ -18,18 +47,6 @@ export default async function AdminDashboard() {
     { label: "المستخدمين", value: userCount, icon: Users, color: "text-purple-500", bg: "bg-purple-500/10" },
     { label: "الفرق", value: teamCount, icon: Shield, color: "text-orange-500", bg: "bg-orange-500/10" },
   ];
-
-  const recentMatches = await prisma.match.findMany({
-    take: 5,
-    orderBy: { date: "desc" },
-    include: { homeTeam: true, awayTeam: true, league: true },
-  });
-
-  const recentNews = await prisma.news.findMany({
-    take: 5,
-    orderBy: { createdAt: "desc" },
-    select: { id: true, title: true, createdAt: true, views: true, published: true },
-  });
 
   return (
     <div className="space-y-8">
@@ -64,10 +81,10 @@ export default async function AdminDashboard() {
             آخر المباريات
           </h3>
           <div className="space-y-2">
-            {recentMatches.map((m) => (
+            {recentMatches.map((m: any) => (
               <div key={m.id} className="flex items-center justify-between p-2 rounded-xl hover:bg-accent/50 text-sm">
                 <span className="truncate">
-                  {m.homeTeam.name} vs {m.awayTeam.name}
+                  {m.homeTeam?.name || "?"} vs {m.awayTeam?.name || "?"}
                 </span>
                 <span className="text-xs text-muted-foreground">
                   {m.homeScore ?? "-"}:{m.awayScore ?? "-"}
@@ -86,12 +103,12 @@ export default async function AdminDashboard() {
             آخر الأخبار
           </h3>
           <div className="space-y-2">
-            {recentNews.map((n) => (
+            {recentNews.map((n: any) => (
               <div key={n.id} className="flex items-center justify-between p-2 rounded-xl hover:bg-accent/50 text-sm">
                 <span className="truncate">{n.title}</span>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <Eye className="w-3 h-3" />
-                  {n.views}
+                  {n.views ?? 0}
                 </div>
               </div>
             ))}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/layout/theme-provider";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
+import { LocaleProvider } from "@/components/layout/locale-provider";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
@@ -50,9 +51,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-screen bg-background antialiased">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          <Navbar />
-          <main className="container pt-20 pb-8 min-h-screen">{children}</main>
-          <Footer />
+          <LocaleProvider>
+            <Navbar />
+            <main className="container pt-20 pb-8 min-h-screen">{children}</main>
+            <Footer />
+          </LocaleProvider>
         </ThemeProvider>
       </body>
     </html>

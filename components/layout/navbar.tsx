@@ -5,17 +5,14 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { LocaleSwitcher } from "@/components/layout/locale-switcher";
 import {
   Menu,
   X,
   Search,
-  Globe,
   ChevronDown,
-  Clock,
   Trophy,
   Newspaper,
-  Shield,
-  Users,
   Radio,
   LineChart,
   Home,
@@ -113,6 +110,8 @@ export function Navbar() {
           </div>
 
           <div className="flex items-center gap-2">
+            <LocaleSwitcher />
+
             <button
               onClick={() => setSearchOpen(!searchOpen)}
               className="h-10 w-10 rounded-xl flex items-center justify-center hover:bg-accent transition-all"

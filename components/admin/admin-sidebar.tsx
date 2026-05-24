@@ -15,6 +15,7 @@ import {
   Megaphone,
   LogOut,
   Trophy,
+  Key,
 } from "lucide-react";
 
 const adminLinks = [
@@ -24,6 +25,7 @@ const adminLinks = [
   { href: "/admin/teams", label: "الفرق", icon: Shield },
   { href: "/admin/players", label: "اللاعبين", icon: Users },
   { href: "/admin/leagues", label: "الدوريات", icon: Trophy },
+  { href: "/admin/api-keys", label: "مفاتيح API", icon: Key },
   { href: "/admin/ads", label: "الإعلانات", icon: Megaphone },
   { href: "/admin/media", label: "الوسائط", icon: Image },
   { href: "/admin/analytics", label: "الإحصائيات", icon: BarChart3 },

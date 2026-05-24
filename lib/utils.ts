@@ -5,9 +5,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatDate(date: Date | string): string {
+type Locale = "ar" | "en";
+
+export function formatDate(date: Date | string, locale: Locale = "ar"): string {
   const d = new Date(date);
-  return d.toLocaleDateString("ar-EG", {
+  return d.toLocaleDateString(locale === "ar" ? "ar-EG" : "en-US", {
     weekday: "long",
     year: "numeric",
     month: "long",
@@ -15,16 +17,16 @@ export function formatDate(date: Date | string): string {
   });
 }
 
-export function formatTime(date: Date | string): string {
+export function formatTime(date: Date | string, locale: Locale = "ar"): string {
   const d = new Date(date);
-  return d.toLocaleTimeString("ar-EG", {
+  return d.toLocaleTimeString(locale === "ar" ? "ar-EG" : "en-US", {
     hour: "2-digit",
     minute: "2-digit",
   });
 }
 
-export function formatDateTime(date: Date | string): string {
-  return `${formatDate(date)} ${formatTime(date)}`;
+export function formatDateTime(date: Date | string, locale: Locale = "ar"): string {
+  return `${formatDate(date, locale)} ${formatTime(date, locale)}`;
 }
 
 export function getTimeRemaining(date: Date | string): {
@@ -43,13 +45,13 @@ export function getTimeRemaining(date: Date | string): {
   return { days, hours, minutes, seconds, total };
 }
 
-export function matchStatusText(status: string, minute: number): string {
+export function matchStatusText(status: string, minute: number, locale: Locale = "ar"): string {
   switch (status) {
     case "LIVE": return minute > 90 ? `${minute}'` : `${minute}'`;
-    case "SCHEDULED": return "لم تبدأ";
-    case "FINISHED": return "انتهت";
-    case "POSTPONED": return "مؤجلة";
-    case "CANCELLED": return "ملغية";
+    case "SCHEDULED": return locale === "ar" ? "لم تبدأ" : "Scheduled";
+    case "FINISHED": return locale === "ar" ? "انتهت" : "Finished";
+    case "POSTPONED": return locale === "ar" ? "مؤجلة" : "Postponed";
+    case "CANCELLED": return locale === "ar" ? "ملغية" : "Cancelled";
     default: return status;
   }
 }

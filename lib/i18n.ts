@@ -1,0 +1,123 @@
+export type Locale = "ar" | "en";
+
+const translations: Record<string, Record<Locale, string>> = {
+  "site.name": { ar: "عالم كرة القدم", en: "Football World" },
+  "site.description": { ar: "منصة كرة القدم العالمية الأولى", en: "The Ultimate Football Platform" },
+  "nav.home": { ar: "الرئيسية", en: "Home" },
+  "nav.live": { ar: "مباشر", en: "Live" },
+  "nav.matches": { ar: "المباريات", en: "Matches" },
+  "nav.standings": { ar: "الترتيب", en: "Standings" },
+  "nav.news": { ar: "الأخبار", en: "News" },
+  "nav.worldcup": { ar: "كأس العالم", en: "World Cup" },
+  "nav.leagues": { ar: "الدوريات", en: "Leagues" },
+  "nav.login": { ar: "تسجيل الدخول", en: "Login" },
+  "nav.admin": { ar: "لوحة التحكم", en: "Dashboard" },
+  "nav.logout": { ar: "تسجيل الخروج", en: "Logout" },
+  "nav.language": { ar: "English", en: "العربية" },
+  "hero.title": { ar: "عالم كرة القدم\nفي مكان واحد", en: "Football World\nOne Place" },
+  "hero.subtitle": { ar: "كل ما يخص", en: "Football World" },
+  "hero.desc": { ar: "تابع المباريات المباشرة، الأخبار العاجلة، الإحصائيات الدقيقة، وكل ما يخص كرة القدم العالمية", en: "Follow live matches, breaking news, accurate stats, and everything about world football" },
+  "hero.live": { ar: "المباريات المباشرة", en: "Live Matches" },
+  "hero.worldcup": { ar: "كأس العالم", en: "World Cup" },
+  "hero.badge": { ar: "مباريات مباشرة الآن", en: "Live Matches Now" },
+  "live.title": { ar: "المباريات المباشرة", en: "Live Matches" },
+  "live.empty": { ar: "لا توجد مباريات مباشرة الآن", en: "No live matches right now" },
+  "live.empty.desc": { ar: "ستظهر المباريات المباشرة هنا عند بدايتها", en: "Live matches will appear here when they start" },
+  "upcoming.title": { ar: "المباريات القادمة", en: "Upcoming Matches" },
+  "upcoming.empty": { ar: "لا توجد مباريات قادمة", en: "No upcoming matches" },
+  "news.title": { ar: "آخر الأخبار", en: "Latest News" },
+  "news.empty": { ar: "لا توجد أخبار حالياً", en: "No news available" },
+  "news.more": { ar: "عرض المزيد", en: "View More" },
+  "leagues.title": { ar: "الدوريات", en: "Leagues" },
+  "matches.title": { ar: "جميع المباريات", en: "All Matches" },
+  "standings.title": { ar: "جدول الترتيب", en: "Standings" },
+  "team.stats": { ar: "إحصائيات الفريق", en: "Team Stats" },
+  "player.stats": { ar: "إحصائيات اللاعب", en: "Player Stats" },
+  "match.stats": { ar: "إحصائيات المباراة", en: "Match Stats" },
+  "match.events": { ar: "أحداث المباراة", en: "Match Events" },
+  "match.lineup": { ar: "التشكيلة", en: "Lineup" },
+  "match.live": { ar: "مباشر", en: "LIVE" },
+  "match.scheduled": { ar: "لم تبدأ", en: "Scheduled" },
+  "match.finished": { ar: "انتهت", en: "Finished" },
+  "match.postponed": { ar: "مؤجلة", en: "Postponed" },
+  "match.cancelled": { ar: "ملغية", en: "Cancelled" },
+  "match.ht": { ar: "الشوط الأول", en: "1st Half" },
+  "worldcup.title": { ar: "كأس العالم 2026", en: "World Cup 2026" },
+  "worldcup.groups": { ar: "المجموعات", en: "Groups" },
+  "worldcup.bracket": { ar: "الأدوار النهائية", en: "Bracket" },
+  "worldcup.stats": { ar: "الإحصائيات", en: "Stats" },
+  "worldcup.host": { ar: "المستضيف", en: "Host" },
+  "worldcup.teams": { ar: "فريق", en: "Teams" },
+  "worldcup.matches": { ar: "مباراة", en: "Matches" },
+  "worldcup.groups.count": { ar: "مجموعة", en: "Groups" },
+  "admin.title": { ar: "لوحة التحكم", en: "Admin Dashboard" },
+  "admin.welcome": { ar: "مرحباً بك في لوحة إدارة الموقع", en: "Welcome to the admin dashboard" },
+  "admin.matches": { ar: "المباريات", en: "Matches" },
+  "admin.news": { ar: "الأخبار", en: "News" },
+  "admin.users": { ar: "المستخدمين", en: "Users" },
+  "admin.teams": { ar: "الفرق", en: "Teams" },
+  "admin.players": { ar: "اللاعبين", en: "Players" },
+  "admin.leagues": { ar: "الدوريات", en: "Leagues" },
+  "admin.ads": { ar: "الإعلانات", en: "Ads" },
+  "admin.media": { ar: "الوسائط", en: "Media" },
+  "admin.analytics": { ar: "الإحصائيات", en: "Analytics" },
+  "admin.apikeys": { ar: "مفاتيح API", en: "API Keys" },
+  "admin.settings": { ar: "الإعدادات", en: "Settings" },
+  "pos.gk": { ar: "حارس مرمى", en: "Goalkeeper" },
+  "pos.def": { ar: "مدافع", en: "Defender" },
+  "pos.mid": { ar: "وسط", en: "Midfielder" },
+  "pos.fwd": { ar: "مهاجم", en: "Forward" },
+  "common.loading": { ar: "جاري التحميل...", en: "Loading..." },
+  "common.error": { ar: "حدث خطأ", en: "An error occurred" },
+  "common.retry": { ar: "إعادة المحاولة", en: "Retry" },
+  "common.save": { ar: "حفظ", en: "Save" },
+  "common.cancel": { ar: "إلغاء", en: "Cancel" },
+  "common.delete": { ar: "حذف", en: "Delete" },
+  "common.edit": { ar: "تعديل", en: "Edit" },
+  "common.add": { ar: "إضافة", en: "Add" },
+  "common.search": { ar: "بحث", en: "Search" },
+  "common.filter": { ar: "تصفية", en: "Filter" },
+  "common.all": { ar: "الكل", en: "All" },
+  "common.noData": { ar: "لا توجد بيانات", en: "No data available" },
+  "common.viewAll": { ar: "عرض الكل", en: "View All" },
+  "footer.copyright": { ar: "جميع الحقوق محفوظة", en: "All rights reserved" },
+  "footer.privacy": { ar: "سياسة الخصوصية", en: "Privacy Policy" },
+  "footer.terms": { ar: "شروط الاستخدام", en: "Terms of Service" },
+  "footer.contact": { ar: "اتصل بنا", en: "Contact Us" },
+  "api.keys.title": { ar: "إدارة مفاتيح API", en: "API Keys Management" },
+  "api.keys.desc": { ar: "أضف وأدر مفاتيح API للخدمات المختلفة", en: "Add and manage API keys for various services" },
+  "api.keys.name": { ar: "اسم الخدمة", en: "Service Name" },
+  "api.keys.key": { ar: "المفتاح", en: "API Key" },
+  "api.keys.add": { ar: "إضافة مفتاح جديد", en: "Add New Key" },
+  "api.keys.service": { ar: "الخدمة", en: "Service" },
+  "api.keys.status": { ar: "الحالة", en: "Status" },
+  "api.keys.active": { ar: "نشط", en: "Active" },
+  "api.keys.inactive": { ar: "غير نشط", en: "Inactive" },
+  "api.keys.lastUsed": { ar: "آخر استخدام", en: "Last Used" },
+  "api.keys.encrypted": { ar: "مشفر", en: "Encrypted" },
+  "api.keys.noKeys": { ar: "لا توجد مفاتيح API", en: "No API keys configured" },
+};
+
+export function t(key: string, locale: Locale = "ar"): string {
+  return translations[key]?.[locale] || key;
+}
+
+export function getLocale(): Locale {
+  if (typeof window !== "undefined") {
+    const saved = localStorage.getItem("locale") as Locale;
+    if (saved === "ar" || saved === "en") return saved;
+  }
+  return "ar";
+}
+
+export function setLocale(locale: Locale) {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("locale", locale);
+    document.documentElement.lang = locale;
+    document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
+  }
+}
+
+export function getDir(locale: Locale): "rtl" | "ltr" {
+  return locale === "ar" ? "rtl" : "ltr";
+}
