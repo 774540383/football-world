@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { getChannels, saveChannels, FALLBACK_CHANNELS } from "@/lib/streaming";
-import type { Channel, StreamSource } from "@/lib/streaming";
+import type { Channel, StreamSource, ChannelCategory, StreamType } from "@/lib/streaming";
 import { Tv, Plus, Trash2, Edit2, Check, X, Wifi, WifiOff, Play, Save, Download, Upload } from "lucide-react";
 
 export default function AdminStreamsPage() {
@@ -16,19 +16,18 @@ export default function AdminStreamsPage() {
   const [importUrl, setImportUrl] = useState("");
   const [importMessage, setImportMessage] = useState("");
 
-  const [form, setForm] = useState({
-    name: "",
-    nameAr: "",
-    logo: "",
-    category: "sports" as const,
-    categoryAr: "رياضية",
-    country: "",
-    countryAr: "",
-    streamUrl: "",
-    streamType: "youtube" as const,
-    streamName: "",
-    streamNameAr: "",
-    isFree: false,
+  const [form, setForm] = useState<{
+    name: string; nameAr: string; logo: string;
+    category: string; categoryAr: string;
+    country: string; countryAr: string;
+    streamUrl: string; streamType: string;
+    streamName: string; streamNameAr: string; isFree: boolean;
+  }>({
+    name: "", nameAr: "", logo: "",
+    category: "sports", categoryAr: "رياضية",
+    country: "", countryAr: "",
+    streamUrl: "", streamType: "youtube",
+    streamName: "", streamNameAr: "", isFree: false,
   });
 
   useEffect(() => {
@@ -36,11 +35,7 @@ export default function AdminStreamsPage() {
   }, []);
 
   function resetForm() {
-    setForm({
-      name: "", nameAr: "", logo: "", category: "sports", categoryAr: "رياضية",
-      country: "", countryAr: "", streamUrl: "", streamType: "youtube",
-      streamName: "", streamNameAr: "", isFree: false,
-    });
+    setForm({ name: "", nameAr: "", logo: "", category: "sports", categoryAr: "رياضية", country: "", countryAr: "", streamUrl: "", streamType: "youtube", streamName: "", streamNameAr: "", isFree: false });
     setEditingId(null);
     setShowForm(false);
   }
@@ -52,9 +47,11 @@ export default function AdminStreamsPage() {
       id: Date.now().toString(36),
       name: form.streamName || form.name,
       nameAr: form.streamNameAr || form.nameAr,
-      type: form.streamType,
+      type: form.streamType as StreamType,
       url: form.streamUrl,
     };
+
+    const cat = form.category as ChannelCategory;
 
     if (editingId) {
       const updated = channels.map((ch) =>
@@ -64,7 +61,7 @@ export default function AdminStreamsPage() {
               name: form.name,
               nameAr: form.nameAr,
               logo: form.logo,
-              category: form.category,
+              category: cat,
               categoryAr: form.categoryAr,
               country: form.country,
               countryAr: form.countryAr,
@@ -81,7 +78,7 @@ export default function AdminStreamsPage() {
         name: form.name,
         nameAr: form.nameAr,
         logo: form.logo,
-        category: form.category,
+        category: cat,
         categoryAr: form.categoryAr,
         streams: [stream],
         active: true,
@@ -108,7 +105,7 @@ export default function AdminStreamsPage() {
       name: channel.name,
       nameAr: channel.nameAr,
       logo: channel.logo || "",
-      category: channel.category,
+      category: channel.category as string,
       categoryAr: channel.categoryAr,
       country: channel.country,
       countryAr: channel.countryAr,
@@ -228,7 +225,7 @@ export default function AdminStreamsPage() {
             </div>
             <div>
               <label className="text-sm font-medium mb-1 block">التصنيف</label>
-              <select className="w-full h-10 rounded-lg border border-input bg-background px-3 text-sm" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value as any, categoryAr: e.target.value === "sports" ? "رياضية" : e.target.value === "news" ? "أخبار" : "ترفيه" })}>
+                    <select className="w-full h-10 rounded-lg border border-input bg-background px-3 text-sm" value={form.category} onChange={(e) => { const v = e.target.value; setForm({ ...form, category: v, categoryAr: v === "sports" ? "رياضية" : v === "news" ? "أخبار" : "ترفيه" }); }}>
                 <option value="sports">رياضية</option>
                 <option value="news">أخبار</option>
                 <option value="entertainment">ترفيه</option>
@@ -244,7 +241,7 @@ export default function AdminStreamsPage() {
             </div>
             <div>
               <label className="text-sm font-medium mb-1 block">نوع البث</label>
-              <select className="w-full h-10 rounded-lg border border-input bg-background px-3 text-sm" value={form.streamType} onChange={(e) => setForm({ ...form, streamType: e.target.value as any })}>
+                    <select className="w-full h-10 rounded-lg border border-input bg-background px-3 text-sm" value={form.streamType} onChange={(e) => setForm({ ...form, streamType: e.target.value })}>
                 <option value="youtube">يوتيوب</option>
                 <option value="hls">HLS (M3U8)</option>
                 <option value="direct">رابط مباشر</option>

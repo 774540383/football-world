@@ -37,7 +37,7 @@ export function VideoPlayer({ source, poster, className = "", autoPlay = true }:
       const hls = new Hls({
         enableWorker: true,
         lowLatencyMode: true,
-        backbufferLength: 90,
+        backBufferLength: 90,
       });
       hls.loadSource(source.url);
       hls.attachMedia(video);
