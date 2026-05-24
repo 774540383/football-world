@@ -9,3 +9,4 @@ out/
 cf_*
 lt_*
 cloudflared*
+.vercel

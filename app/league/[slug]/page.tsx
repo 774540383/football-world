@@ -15,9 +15,9 @@ export const dynamic = "force-dynamic";
 
 export default async function LeaguePage({ params }: LeaguePageProps) {
   const { slug } = await params;
-  const leagues = await getLeagues();
+  const leagues: any[] = await getLeagues();
   const league = leagues.find(
-    (l) => l.name.toLowerCase().replace(/\s+/g, "-") === slug
+    (l: any) => l.name.toLowerCase().replace(/\s+/g, "-") === slug
   );
 
   if (!league) notFound();
