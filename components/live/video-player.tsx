@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Hls from "hls.js";
-import Plyr from "plyr";
 import "plyr/dist/plyr.css";
-import { Loader2, AlertTriangle, RefreshCw, Monitor, Maximize } from "lucide-react";
+import { Loader2, AlertTriangle, RefreshCw } from "lucide-react";
 import type { StreamSource } from "@/lib/streaming";
 
 interface VideoPlayerProps {
@@ -16,10 +14,8 @@ interface VideoPlayerProps {
 
 export function VideoPlayer({ source, poster, className = "", autoPlay = true }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const plyrRef = useRef<Plyr | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [currentQuality, setCurrentQuality] = useState<string>("auto");
 
   useEffect(() => {
     const video = videoRef.current;
@@ -33,92 +29,71 @@ export function VideoPlayer({ source, poster, className = "", autoPlay = true }:
       return;
     }
 
-    if (source.type === "hls" && Hls.isSupported()) {
-      const hls = new Hls({
-        enableWorker: true,
-        lowLatencyMode: true,
-        backBufferLength: 90,
-      });
-      hls.loadSource(source.url);
-      hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        setLoading(false);
-        if (autoPlay) video.play().catch(() => {});
-      });
-      hls.on(Hls.Events.ERROR, (_event, data) => {
-        if (data.fatal) {
-          setError("فشل تحميل البث. قد يكون الرابط غير صحيح أو البث غير متاح.");
-          setLoading(false);
-        }
-      });
-
-      if (!plyrRef.current) {
-        plyrRef.current = new Plyr(video, {
-          controls: ["play-large", "play", "progress", "current-time", "duration", "mute", "volume", "settings", "fullscreen"],
-          settings: ["quality", "speed"],
-          quality: { default: 720, options: [1080, 720, 480, 360] },
-          i18n: {
-            restart: "إعادة التشغيل",
-            rewind: "إرجاع",
-            play: "تشغيل",
-            pause: "إيقاف",
-            fastForward: "تقديم",
-            seek: "بحث",
-            seekLabel: "{current} من {duration}",
-            played: "تم التشغيل",
-            buffered: "تم التخزين",
-            currentTime: "الوقت الحالي",
-            duration: "المدة",
-            volume: "مستوى الصوت",
-            mute: "كتم الصوت",
-            unmute: "إلغاء كتم الصوت",
-            enableCaptions: "تفعيل الترجمة",
-            disableCaptions: "إلغاء الترجمة",
-            download: "تحميل",
-            enterFullscreen: "شاشة كاملة",
-            exitFullscreen: "خروج من الشاشة الكاملة",
-            frameTitle: "مشغل الفيديو",
-            captions: "الترجمة",
-            settings: "الإعدادات",
-            menuBack: "العودة للقائمة السابقة",
-            speed: "السرعة",
-            normal: "عادي",
-            quality: "الجودة",
-            loop: "حلقة",
-          },
-        });
-      }
-
-      return () => {
-        hls.destroy();
-        plyrRef.current?.destroy();
-        plyrRef.current = null;
-      };
-    } else if (source.type === "direct" || source.type === "dash") {
-      video.src = source.url;
+    if (source.type === "embed") {
       setLoading(false);
-      if (!plyrRef.current) {
-        plyrRef.current = new Plyr(video, {
-          controls: ["play-large", "play", "progress", "current-time", "duration", "mute", "volume", "settings", "fullscreen"],
-          i18n: {
-            play: "تشغيل",
-            pause: "إيقاف",
-            volume: "مستوى الصوت",
-            mute: "كتم الصوت",
-            enterFullscreen: "شاشة كاملة",
-            exitFullscreen: "خروج من الشاشة الكاملة",
-          },
-        });
-      }
-      return () => {
-        plyrRef.current?.destroy();
-        plyrRef.current = null;
-      };
-    } else if (source.type === "embed") {
-      setLoading(false);
+      return;
     }
 
-    setLoading(false);
+    async function initPlayer() {
+      try {
+        if (source.type === "hls") {
+          const Hls = (await import("hls.js")).default;
+          if (Hls.isSupported()) {
+            const hls = new Hls({
+              enableWorker: true,
+              lowLatencyMode: true,
+              backBufferLength: 90,
+            });
+            hls.loadSource(source.url);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+              setLoading(false);
+              if (autoPlay) video.play().catch(() => {});
+            });
+            hls.on(Hls.Events.ERROR, (_event: any, data: any) => {
+              if (data.fatal) {
+                setError("فشل تحميل البث. قد يكون الرابط غير صحيح أو البث غير متاح.");
+                setLoading(false);
+              }
+            });
+
+            const Plyr = (await import("plyr")).default;
+            const player = new Plyr(video, {
+              controls: ["play-large", "play", "progress", "current-time", "duration", "mute", "volume", "settings", "fullscreen"],
+              settings: ["quality", "speed"],
+              quality: { default: 720, options: [1080, 720, 480, 360] },
+            });
+
+            return () => {
+              hls.destroy();
+              player.destroy();
+            };
+          } else {
+            video.src = source.url;
+            setLoading(false);
+            const Plyr = (await import("plyr")).default;
+            const player = new Plyr(video);
+            return () => player.destroy();
+          }
+        } else {
+          video.src = source.url;
+          setLoading(false);
+          const Plyr = (await import("plyr")).default;
+          const player = new Plyr(video, {
+            controls: ["play-large", "play", "progress", "current-time", "duration", "mute", "volume", "settings", "fullscreen"],
+          });
+          return () => player.destroy();
+        }
+      } catch {
+        setError("حدث خطأ في تحميل البث");
+        setLoading(false);
+      }
+    }
+
+    const cleanupPromise = initPlayer();
+    return () => {
+      cleanupPromise.then((cleanup) => cleanup?.());
+    };
   }, [source.url, source.type]);
 
   if (source.type === "youtube") {
@@ -184,25 +159,12 @@ export function VideoPlayer({ source, poster, className = "", autoPlay = true }:
         </div>
       )}
 
-      <video
-        ref={videoRef}
-        className="w-full h-full"
-        poster={poster || source.poster}
-        playsInline
-        controls={false}
-      />
+      <video ref={videoRef} className="w-full h-full" poster={poster || source.poster} playsInline controls={false} />
 
       {source.quality && source.quality.length > 0 && (
         <div className="absolute bottom-2 left-2 z-10 flex gap-1">
           {source.quality.map((q) => (
-            <span
-              key={q}
-              className={`px-1.5 py-0.5 text-[10px] rounded font-medium ${
-                currentQuality === q ? "bg-primary text-white" : "bg-black/50 text-white/70"
-              }`}
-            >
-              {q}
-            </span>
+            <span key={q} className="px-1.5 py-0.5 text-[10px] rounded font-medium bg-black/50 text-white/70">{q}</span>
           ))}
         </div>
       )}
