@@ -8,7 +8,11 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "upload.wikimedia.org" },
       { protocol: "https", hostname: "**.supabase.co" },
       { protocol: "https", hostname: "img.icons8.com" },
+      { protocol: "https", hostname: "i.ytimg.com" },
+      { protocol: "https", hostname: "img.youtube.com" },
+      { protocol: "https", hostname: "**.ggpht.com" },
     ],
+    dangerouslyAllowSVG: true,
   },
   experimental: {
     serverActions: { bodySizeLimit: "5mb" },

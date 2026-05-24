@@ -17,11 +17,13 @@ import {
   LineChart,
   Home,
   Calendar,
+  Tv,
 } from "lucide-react";
 
 const navLinks = [
   { href: "/", label: "الرئيسية", labelEn: "Home", icon: Home },
   { href: "/live", label: "مباشر", labelEn: "Live", icon: Radio, badge: true },
+  { href: "/live/channels", label: "القنوات", labelEn: "TV", icon: Tv, badge: false },
   { href: "/matches", label: "المباريات", labelEn: "Matches", icon: Calendar },
   { href: "/standings", label: "الترتيب", labelEn: "Standings", icon: LineChart },
   { href: "/world-cup", label: "كأس العالم", labelEn: "World Cup", icon: Trophy },

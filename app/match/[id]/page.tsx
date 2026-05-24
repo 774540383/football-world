@@ -2,9 +2,10 @@ import { notFound } from "next/navigation";
 import { LiveScoreboard } from "@/components/match/live-scoreboard";
 import { MatchStats } from "@/components/match/match-stats";
 import { MatchEvents } from "@/components/match/match-events";
+import { MatchStreamSection } from "@/components/match/match-stream-section";
 import { getMatchById } from "@/lib/data";
-import { MatchCard } from "@/components/match/match-card";
 import { RelatedNews } from "@/components/match/related-news";
+import { getMatchStreams } from "@/lib/streaming";
 
 interface MatchPageProps {
   params: Promise<{ id: string }>;
@@ -19,9 +20,19 @@ export default async function MatchPage({ params }: MatchPageProps) {
 
   if (!match) notFound();
 
+  const stream = getMatchStreams(match.id);
+
   return (
     <div className="space-y-8">
       <LiveScoreboard match={match as any} />
+
+      {(match.status === "LIVE" || stream) && (
+        <MatchStreamSection
+          matchId={match.id}
+          homeTeam={match.homeTeam.nameAr || match.homeTeam.name}
+          awayTeam={match.awayTeam.nameAr || match.awayTeam.name}
+        />
+      )}
 
       {match.status === "LIVE" || match.status === "FINISHED" ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
