@@ -18,15 +18,25 @@ export interface IPTVCategory {
   parent_id: number;
 }
 
+async function fetchFrom(url: string): Promise<any> {
+  const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
 export async function fetchIPTVChannels(): Promise<IPTVChannel[]> {
-  try {
-    const res = await fetch(`${PROXY_HTTPS}/channels`, { next: { revalidate: 300 } });
-    if (!res.ok) throw new Error("Proxy not reachable");
-    const data = await res.json();
-    return data.channels || [];
-  } catch {
-    return [];
+  // Try direct proxy HTTPS first, then fall back to Vercel API route
+  const urls = [
+    `${PROXY_HTTPS}/channels`,
+    `/api/proxy?path=channels`,
+  ];
+  for (const url of urls) {
+    try {
+      const data = await fetchFrom(url);
+      if (data?.channels?.length > 0) return data.channels;
+    } catch {}
   }
+  return [];
 }
 
 export async function fetchIPTVCategories(): Promise<IPTVCategory[]> {
