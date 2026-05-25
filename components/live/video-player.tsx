@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import "plyr/dist/plyr.css";
-import { Loader2, AlertTriangle, RefreshCw, Wifi, WifiOff, Layers } from "lucide-react";
+import { Loader2, AlertTriangle, RefreshCw, Wifi, WifiOff, Layers, Server } from "lucide-react";
 import type { StreamSource } from "@/lib/streaming";
 
 interface VideoPlayerProps {
@@ -17,6 +17,7 @@ export function VideoPlayer({ sources, poster, className = "", autoPlay = true, 
   const videoRef = useRef<HTMLVideoElement>(null);
   const plyrRef = useRef<any>(null);
   const hlsRef = useRef<any>(null);
+  const mpegtsRef = useRef<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentSourceIdx, setCurrentSourceIdx] = useState(0);
@@ -62,6 +63,44 @@ export function VideoPlayer({ sources, poster, className = "", autoPlay = true, 
       if (currentSource.type === "embed") {
         setLoading(false);
         return;
+      }
+
+      if (currentSource.type === "ts") {
+        try {
+          const mpegts = (await import("mpegts.js")).default;
+          if (mpegtsRef.current) {
+            mpegtsRef.current.destroy();
+            mpegtsRef.current = null;
+          }
+
+          if (mpegts.isSupported()) {
+            const player = mpegts.createPlayer({
+              type: "mse",  // use MSE for TS playback
+              url: currentSource.url,
+              isLive: true,
+            });
+            mpegtsRef.current = player;
+            player.attachMediaElement(video);
+            player.load();
+            player.play();
+
+            player.on(mpegts.Events.ERROR, () => {
+              if (!destroyed) tryNextSource();
+            });
+
+            setLoading(false);
+
+            const Plyr = (await import("plyr")).default;
+            if (plyrRef.current) plyrRef.current.destroy();
+            plyrRef.current = new Plyr(video, {
+              controls: ["play-large", "play", "progress", "current-time", "duration", "mute", "volume", "settings", "fullscreen"],
+            });
+
+            return;
+          }
+        } catch {
+          // mpegts.js failed, try direct play
+        }
       }
 
       try {
@@ -155,6 +194,10 @@ export function VideoPlayer({ sources, poster, className = "", autoPlay = true, 
         hlsRef.current.destroy();
         hlsRef.current = null;
       }
+      if (mpegtsRef.current) {
+        mpegtsRef.current.destroy();
+        mpegtsRef.current = null;
+      }
       if (plyrRef.current) {
         plyrRef.current.destroy();
         plyrRef.current = null;
@@ -238,6 +281,12 @@ export function VideoPlayer({ sources, poster, className = "", autoPlay = true, 
 
       {/* Source indicator */}
       <div className="absolute top-2 right-2 z-10 flex gap-1">
+        {currentSource.viaProxy && (
+          <span className="px-2 py-1 bg-blue-500/90 text-white text-xs rounded-lg font-medium flex items-center gap-1">
+            <Server className="w-3 h-3" />
+            Proxy
+          </span>
+        )}
         {currentSourceIdx > 0 && (
           <span className="px-2 py-1 bg-green-500/90 text-white text-xs rounded-lg font-medium flex items-center gap-1">
             <Wifi className="w-3 h-3" />

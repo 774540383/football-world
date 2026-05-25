@@ -22,20 +22,23 @@ export interface ProxyConfig {
 }
 
 export const DEFAULT_PROXY_CONFIG: ProxyConfig = {
-  enabled: false,
-  vpsHost: "",
-  vpsPort: 8085,
-  proxyType: "m3u-proxy",
-  m3uUrl: "",
+  enabled: true,
+  vpsHost: "srv1675350.hstgr.cloud",
+  vpsPort: 443,
+  proxyType: "stream-share",
+  m3uUrl: "https://srv1675350.hstgr.cloud/iptv.m3u",
   username: "admin",
   password: "admin123",
+  xtreamBaseUrl: "https://srv1675350.hstgr.cloud",
+  xtreamUsername: "92847429780",
+  xtreamPassword: "92748302883",
   apiKey: "",
   healthEndpoint: "/health",
   connected: false,
   lastHealthCheck: 0,
   stats: {
     activeConnections: 0,
-    totalStreams: 0,
+    totalStreams: 8099,
     bandwidthUsage: "0 MB",
     uptime: "0m",
   },
@@ -65,9 +68,9 @@ export function saveProxyConfig(config: ProxyConfig) {
 
 export function buildStreamUrl(channelId: string, config: ProxyConfig): string {
   if (!config.enabled || !config.vpsHost) return "";
-  const base = `http://${config.vpsHost}:${config.vpsPort}`;
+  const base = `https://${config.vpsHost}`;
   if (config.proxyType === "stream-share") {
-    return `${base}/stream/${channelId}?username=${config.username}&password=${config.password}`;
+    return `${base}/stream/${channelId}`;
   }
   return `${base}/hls/${channelId}/playlist.m3u8`;
 }

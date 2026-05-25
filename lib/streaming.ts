@@ -1,5 +1,70 @@
-export type StreamType = "hls" | "youtube" | "direct" | "embed" | "dash";
+export type StreamType = "hls" | "youtube" | "direct" | "embed" | "dash" | "ts";
 export type ChannelCategory = "sports" | "news" | "entertainment" | "movies";
+
+// ====== PROXY CONFIG ======
+export const PROXY_HTTPS = "https://srv1675350.hstgr.cloud";
+
+export interface IPTVChannel {
+  id: number;
+  name: string;
+  icon: string;
+  category: string;
+  epg?: string;
+}
+
+export interface IPTVCategory {
+  category_id: string;
+  category_name: string;
+  parent_id: number;
+}
+
+export async function fetchIPTVChannels(): Promise<IPTVChannel[]> {
+  try {
+    const res = await fetch(`${PROXY_HTTPS}/channels`, { next: { revalidate: 300 } });
+    if (!res.ok) throw new Error("Proxy not reachable");
+    const data = await res.json();
+    return data.channels || [];
+  } catch {
+    return [];
+  }
+}
+
+export async function fetchIPTVCategories(): Promise<IPTVCategory[]> {
+  try {
+    const res = await fetch(`${PROXY_HTTPS}/categories`, { next: { revalidate: 300 } });
+    if (!res.ok) throw new Error("Proxy not reachable");
+    return await res.json();
+  } catch {
+    return [];
+  }
+}
+
+export function iptvToChannel(iptv: IPTVChannel): Channel {
+  return {
+    id: `iptv-${iptv.id}`,
+    name: iptv.name,
+    nameAr: iptv.name,
+    logo: iptv.icon || "",
+    category: "sports",
+    categoryAr: "رياضية",
+    streams: [
+      {
+        id: `iptv-src-${iptv.id}`,
+        name: `${iptv.name} HD`,
+        nameAr: `${iptv.name}`,
+        type: "ts",
+        url: `${PROXY_HTTPS}/stream?id=${iptv.id}`,
+        viaProxy: true,
+        proxyId: "vps",
+        quality: ["HD"],
+      },
+    ],
+    active: true,
+    isFree: true,
+    country: "",
+    countryAr: "",
+  };
+}
 
 export interface StreamSource {
   id: string;
@@ -251,9 +316,9 @@ export function getProxySourceUrl(source: StreamSource): string {
     if (!raw) return source.url;
     const config = JSON.parse(raw);
     if (!config.enabled || !config.vpsHost) return source.url;
-    const base = `http://${config.vpsHost}:${config.vpsPort}`;
+    const base = `https://${config.vpsHost}`;
     if (config.proxyType === "stream-share") {
-      return `${base}/stream/${source.id}?username=${config.username}&password=${config.password}`;
+      return `${base}/stream/${source.id}`;
     }
     return `${base}/hls/${source.id}/playlist.m3u8`;
   } catch {
