@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { ChannelCard } from "@/components/live/channel-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getChannelsWithProxy, fetchIPTVChannels, iptvToChannel, FALLBACK_CHANNELS } from "@/lib/streaming";
+import { fetchIPTVChannels, iptvToChannel, getChannels } from "@/lib/streaming";
 import { Search, Monitor, Radio, Wifi, Tv, Loader2 } from "lucide-react";
 
 const categories = [
@@ -24,7 +24,7 @@ export default function ChannelsContent() {
   const [showIPTV, setShowIPTV] = useState(true);
 
   useEffect(() => {
-    const fallback = getChannelsWithProxy();
+    const fallback = getChannels();
     setChannels(fallback);
 
     fetchIPTVChannels().then((iptvChannels) => {
