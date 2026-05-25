@@ -57,6 +57,8 @@ export interface IPTVChannel {
   category: string;
 }
 
+const PROXY_HTTPS = "https://srv1675350.hstgr.cloud";
+
 function mapCategory(catId: string): ChannelCategory {
   const id = parseInt(catId) || 0;
   if (id === 377 || id === 378) return "sports";
@@ -76,8 +78,9 @@ function streamTypeFromUrl(url: string): StreamType {
 
 export async function fetchIPTVChannels(search?: string): Promise<IPTVChannel[]> {
   try {
-    const q = search ? `&q=${encodeURIComponent(search)}` : "";
-    const res = await fetch(`/api/proxy?path=channels${q}`, { signal: AbortSignal.timeout(10000) });
+    const base = PROXY_HTTPS;
+    const url = search ? `${base}/channels?q=${encodeURIComponent(search)}` : `${base}/channels`;
+    const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
     if (!res.ok) throw new Error("Failed to fetch channels");
     const data = await res.json();
     return data.channels || [];
@@ -92,7 +95,7 @@ export async function fetchIPTVChannel(id: number): Promise<IPTVChannel | null> 
 }
 
 export function iptvToChannel(iptv: IPTVChannel): Channel {
-  const proxyUrl = `/api/proxy?path=stream&id=${iptv.id}`;
+  const proxyUrl = `${PROXY_HTTPS}/stream?id=${iptv.id}`;
   return {
     id: `iptv-${iptv.id}`,
     name: iptv.name.replace(/_/g, " "),
@@ -309,42 +312,4 @@ export function getMatchStreams(matchId: string): MatchStream | undefined {
 
 export function getAllMatchStreams(): MatchStream[] {
   return FALLBACK_MATCH_STREAMS;
-}
-
-export function getProxySourceUrl(source: StreamSource): string {
-  if (typeof window === "undefined") return source.url;
-  try {
-    const raw = localStorage.getItem("football_world_proxy");
-    if (!raw) return source.url;
-    const config = JSON.parse(raw);
-    if (!config.enabled || !config.vpsHost) return source.url;
-    return `http://${config.vpsHost}:${config.vpsPort}/stream?id=${source.id.replace("s-iptv-", "")}`;
-  } catch {
-    return source.url;
-  }
-}
-
-export function applyProxyToChannels(channels: Channel[]): Channel[] {
-  if (typeof window === "undefined") return channels;
-  try {
-    const raw = localStorage.getItem("football_world_proxy");
-    if (!raw) return channels;
-    const config = JSON.parse(raw);
-    if (!config.enabled || !config.vpsHost) return channels;
-    return channels.map((ch) => ({
-      ...ch,
-      streams: ch.streams.map((s) => ({
-        ...s,
-        viaProxy: true,
-        url: getProxySourceUrl(s),
-      })),
-    }));
-  } catch {
-    return channels;
-  }
-}
-
-export function getChannelsWithProxy(): Channel[] {
-  const channels = getChannels();
-  return applyProxyToChannels(channels);
 }
