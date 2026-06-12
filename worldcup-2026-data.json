@@ -1,0 +1,302 @@
+[
+  {
+    "name": "A",
+    "teams": [
+      {
+        "name": "USA",
+        "nameAr": "الولايات المتحدة",
+        "flag": "us"
+      },
+      {
+        "name": "Portugal",
+        "nameAr": "البرتغال",
+        "flag": "pt"
+      },
+      {
+        "name": "South Korea",
+        "nameAr": "كوريا الجنوبية",
+        "flag": "kr"
+      },
+      {
+        "name": "Ghana",
+        "nameAr": "غانا",
+        "flag": "gh"
+      }
+    ]
+  },
+  {
+    "name": "B",
+    "teams": [
+      {
+        "name": "Argentina",
+        "nameAr": "الأرجنتين",
+        "flag": "ar"
+      },
+      {
+        "name": "France",
+        "nameAr": "فرنسا",
+        "flag": "fr"
+      },
+      {
+        "name": "Denmark",
+        "nameAr": "الدنمارك",
+        "flag": "dk"
+      },
+      {
+        "name": "Australia",
+        "nameAr": "أستراليا",
+        "flag": "au"
+      }
+    ]
+  },
+  {
+    "name": "C",
+    "teams": [
+      {
+        "name": "England",
+        "nameAr": "إنجلترا",
+        "flag": "gb-eng"
+      },
+      {
+        "name": "Netherlands",
+        "nameAr": "هولندا",
+        "flag": "nl"
+      },
+      {
+        "name": "Senegal",
+        "nameAr": "السنغال",
+        "flag": "sn"
+      },
+      {
+        "name": "Ecuador",
+        "nameAr": "الإكوادور",
+        "flag": "ec"
+      }
+    ]
+  },
+  {
+    "name": "D",
+    "teams": [
+      {
+        "name": "Germany",
+        "nameAr": "ألمانيا",
+        "flag": "de"
+      },
+      {
+        "name": "Spain",
+        "nameAr": "إسبانيا",
+        "flag": "es"
+      },
+      {
+        "name": "Japan",
+        "nameAr": "اليابان",
+        "flag": "jp"
+      },
+      {
+        "name": "Cameroon",
+        "nameAr": "الكاميرون",
+        "flag": "cm"
+      }
+    ]
+  },
+  {
+    "name": "E",
+    "teams": [
+      {
+        "name": "Brazil",
+        "nameAr": "البرازيل",
+        "flag": "br"
+      },
+      {
+        "name": "Croatia",
+        "nameAr": "كرواتيا",
+        "flag": "hr"
+      },
+      {
+        "name": "Switzerland",
+        "nameAr": "سويسرا",
+        "flag": "ch"
+      },
+      {
+        "name": "Saudi Arabia",
+        "nameAr": "المملكة العربية السعودية",
+        "flag": "sa"
+      }
+    ]
+  },
+  {
+    "name": "F",
+    "teams": [
+      {
+        "name": "Belgium",
+        "nameAr": "بلجيكا",
+        "flag": "be"
+      },
+      {
+        "name": "Morocco",
+        "nameAr": "المغرب",
+        "flag": "ma"
+      },
+      {
+        "name": "Serbia",
+        "nameAr": "صربيا",
+        "flag": "rs"
+      },
+      {
+        "name": "Canada",
+        "nameAr": "كندا",
+        "flag": "ca"
+      }
+    ]
+  },
+  {
+    "name": "G",
+    "teams": [
+      {
+        "name": "Italy",
+        "nameAr": "إيطاليا",
+        "flag": "it"
+      },
+      {
+        "name": "Mexico",
+        "nameAr": "المكسيك",
+        "flag": "mx"
+      },
+      {
+        "name": "Poland",
+        "nameAr": "بولندا",
+        "flag": "pl"
+      },
+      {
+        "name": "Tunisia",
+        "nameAr": "تونس",
+        "flag": "tn"
+      }
+    ]
+  },
+  {
+    "name": "H",
+    "teams": [
+      {
+        "name": "Uruguay",
+        "nameAr": "الأوروغواي",
+        "flag": "uy"
+      },
+      {
+        "name": "Nigeria",
+        "nameAr": "نيجيريا",
+        "flag": "ng"
+      },
+      {
+        "name": "Sweden",
+        "nameAr": "السويد",
+        "flag": "se"
+      },
+      {
+        "name": "Iran",
+        "nameAr": "إيران",
+        "flag": "ir"
+      }
+    ]
+  },
+  {
+    "name": "I",
+    "teams": [
+      {
+        "name": "Colombia",
+        "nameAr": "كولومبيا",
+        "flag": "co"
+      },
+      {
+        "name": "Egypt",
+        "nameAr": "مصر",
+        "flag": "eg"
+      },
+      {
+        "name": "Paraguay",
+        "nameAr": "باراغواي",
+        "flag": "py"
+      },
+      {
+        "name": "Iraq",
+        "nameAr": "العراق",
+        "flag": "iq"
+      }
+    ]
+  },
+  {
+    "name": "J",
+    "teams": [
+      {
+        "name": "Chile",
+        "nameAr": "تشيلي",
+        "flag": "cl"
+      },
+      {
+        "name": "Algeria",
+        "nameAr": "الجزائر",
+        "flag": "dz"
+      },
+      {
+        "name": "Czech Republic",
+        "nameAr": "جمهورية التشيك",
+        "flag": "cz"
+      },
+      {
+        "name": "New Zealand",
+        "nameAr": "نيوزيلندا",
+        "flag": "nz"
+      }
+    ]
+  },
+  {
+    "name": "K",
+    "teams": [
+      {
+        "name": "Ivory Coast",
+        "nameAr": "ساحل العاج",
+        "flag": "ci"
+      },
+      {
+        "name": "Wales",
+        "nameAr": "ويلز",
+        "flag": "gb-wls"
+      },
+      {
+        "name": "Norway",
+        "nameAr": "النرويج",
+        "flag": "no"
+      },
+      {
+        "name": "Qatar",
+        "nameAr": "قطر",
+        "flag": "qa"
+      }
+    ]
+  },
+  {
+    "name": "L",
+    "teams": [
+      {
+        "name": "Turkey",
+        "nameAr": "تركيا",
+        "flag": "tr"
+      },
+      {
+        "name": "Russia",
+        "nameAr": "روسيا",
+        "flag": "ru"
+      },
+      {
+        "name": "Scotland",
+        "nameAr": "اسكتلندا",
+        "flag": "gb-sct"
+      },
+      {
+        "name": "Jamaica",
+        "nameAr": "جامايكا",
+        "flag": "jm"
+      }
+    ]
+  }
+]
