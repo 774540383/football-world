@@ -369,3 +369,26 @@ model Media {
   @@map("media")
 }
 
+
+model AIContent {
+  id               String   @id @default(cuid())
+  title            String
+  titleAr          String?
+  type             String   @default("match_analysis")
+  platform         String?
+  hook             String?
+  hookAr           String?
+  script           String?
+  scriptAr         String?
+  caption          String?
+  captionAr        String?
+  hashtags         String?
+  visualSuggestions String?
+  viralScore       Int      @default(0)
+  status           String   @default("draft")
+  metadata         String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("ai_contents")
+}
