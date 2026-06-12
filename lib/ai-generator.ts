@@ -212,6 +212,32 @@ ${
       createdAt: new Date().toISOString(),
       status: "draft",
     };
+    // Fallback: try Gemini API
+    if (!data && typeof process !== "undefined" && process.env?.GEMINI_API_KEY) {
+      try {
+        const geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + process.env.GEMINI_API_KEY;
+        const response = await fetch(geminiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{
+              parts: [{ text: fullPrompt + "\n\nIMPORTANT: Return ONLY valid JSON without markdown formatting." }]
+            }],
+            generationConfig: {
+              temperature: 0.8,
+              maxOutputTokens: 2048,
+            }
+          }),
+        });
+        const result = await response.json();
+        const text = result?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        if (jsonMatch) data = JSON.parse(jsonMatch[0]);
+      } catch (e) {
+        console.error("Gemini error:", e?.message || "unknown");
+      }
+    }
+
   } catch {
     return getFallbackContent(request) as AIGeneratedContent;
   }
