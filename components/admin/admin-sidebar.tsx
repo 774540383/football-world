@@ -18,6 +18,7 @@ import {
   Key,
   Tv,
   Server,
+  Sparkles,
 } from "lucide-react";
 
 const adminLinks = [
@@ -27,6 +28,7 @@ const adminLinks = [
   { href: "/admin/teams", label: "الفرق", icon: Shield },
   { href: "/admin/players", label: "اللاعبين", icon: Users },
   { href: "/admin/leagues", label: "الدوريات", icon: Trophy },
+  { href: "/admin/ai", label: "الذكاء الاصطناعي", icon: Sparkles },
   { href: "/admin/api-keys", label: "مفاتيح API", icon: Key },
   { href: "/admin/streams", label: "القنوات", icon: Tv },
   { href: "/admin/proxy", label: "خادم البث (Proxy)", icon: Server },

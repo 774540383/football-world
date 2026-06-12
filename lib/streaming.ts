@@ -1,8 +1,61 @@
-export type StreamType = "hls" | "youtube" | "direct" | "embed" | "dash" | "ts";
+export type StreamType = "hls" | "youtube" | "direct" | "embed" | "dash" | "ts" | "webrtc" | "websocket";
 export type ChannelCategory = "sports" | "news" | "entertainment" | "movies";
+export type ConnectionQuality = "low" | "medium" | "high" | "unknown";
 
 // ====== PROXY CONFIG ======
 export const PROXY_HTTPS = "https://srv1675350.hstgr.cloud";
+export const PROXY_HOST = "srv1675350.hstgr.cloud";
+export const PROXY_DIRECT = "https://srv1675350.hstgr.cloud";
+export const VERCEL_PROXY_PREFIX = "/api/proxy";
+
+// ====== STREAMING OPTIMIZATION ======
+export const STREAM_BUFFER_DEFAULTS = {
+  live: { maxBufferLength: 30, backBufferLength: 30, maxMaxBufferLength: 60 },
+  vod: { maxBufferLength: 60, backBufferLength: 90, maxMaxBufferLength: 120 },
+};
+
+export const HLS_LIVE_CONFIG = {
+  enableWorker: true,
+  lowLatencyMode: true,
+  backBufferLength: 30,
+  maxBufferLength: 30,
+  maxMaxBufferLength: 60,
+  liveSyncDurationCount: 3,
+  liveMaxLatencyDurationCount: 6,
+  startLevel: -1,
+  manifestLoadingMaxRetry: 10,
+  levelLoadingMaxRetry: 10,
+  fragLoadingMaxRetry: 10,
+  manifestLoadingTimeOut: 15000,
+  levelLoadingTimeOut: 10000,
+  fragLoadingTimeOut: 10000,
+  abrEwmaDefaultEstimate: 500000,
+  abrBandWidthFactor: 0.8,
+  abrBandWidthUpFactor: 0.7,
+  maxFragLookUpTolerance: 0.25,
+};
+
+export function estimateConnectionQuality(): ConnectionQuality {
+  if (typeof navigator === "undefined") return "unknown";
+  const conn = (navigator as any).connection;
+  if (!conn) return "unknown";
+  const down = conn.downlink || 0;
+  if (down < 0.5) return "low";
+  if (down < 3) return "medium";
+  return "high";
+}
+
+export function getProxyUrls(channelId: string, preferDirect = true): string[] {
+  const quality = estimateConnectionQuality();
+  const useDirect = preferDirect && quality !== "low";
+  const urls: string[] = [];
+  if (useDirect) {
+    urls.push(`${PROXY_DIRECT}/stream?id=${channelId}`);
+  }
+  urls.push(`${VERCEL_PROXY_PREFIX}?path=stream&id=${channelId}`);
+  urls.push(`${PROXY_DIRECT}/hls/${channelId}/playlist.m3u8`);
+  return urls;
+}
 
 export interface IPTVChannel {
   id: number;
@@ -19,29 +72,37 @@ export interface IPTVCategory {
 }
 
 async function fetchFrom(url: string): Promise<any> {
-  const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return res.json();
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
+  try {
+    const res = await fetch(url, { signal: controller.signal });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 export async function fetchIPTVChannels(): Promise<IPTVChannel[]> {
-  // Try direct proxy HTTPS first, then fall back to Vercel API route
   const urls = [
-    `${PROXY_HTTPS}/channels`,
-    `/api/proxy?path=channels`,
+    `${PROXY_DIRECT}/api/channels`,
+    `${PROXY_DIRECT}/channels`,
+    `${VERCEL_PROXY_PREFIX}?path=channels`,
+    `${VERCEL_PROXY_PREFIX}?path=api/channels`,
   ];
   for (const url of urls) {
     try {
       const data = await fetchFrom(url);
-      if (data?.channels?.length > 0) return data.channels;
-    } catch {}
+      const channels = data?.channels || data?.data || data;
+      if (Array.isArray(channels) && channels.length > 0) return channels;
+    } catch { /* try next */ }
   }
   return [];
 }
 
 export async function fetchIPTVCategories(): Promise<IPTVCategory[]> {
   try {
-    const res = await fetch(`${PROXY_HTTPS}/categories`, { next: { revalidate: 300 } });
+    const res = await fetch(`${PROXY_DIRECT}/api/categories`, { next: { revalidate: 300 } });
     if (!res.ok) throw new Error("Proxy not reachable");
     return await res.json();
   } catch {
@@ -50,6 +111,8 @@ export async function fetchIPTVCategories(): Promise<IPTVCategory[]> {
 }
 
 export function iptvToChannel(iptv: IPTVChannel): Channel {
+  const quality = estimateConnectionQuality();
+  const useDirect = quality !== "low";
   return {
     id: `iptv-${iptv.id}`,
     name: iptv.name,
@@ -63,10 +126,13 @@ export function iptvToChannel(iptv: IPTVChannel): Channel {
         name: `${iptv.name} HD`,
         nameAr: `${iptv.name}`,
         type: "ts",
-        url: `${PROXY_HTTPS}/stream?id=${iptv.id}`,
+        url: `${PROXY_DIRECT}/stream?id=${iptv.id}`,
         viaProxy: true,
         proxyId: "vps",
         quality: ["HD"],
+        backupUrls: useDirect
+          ? [`${VERCEL_PROXY_PREFIX}?path=stream&id=${iptv.id}`, `${PROXY_DIRECT}/hls/${iptv.id}/playlist.m3u8`]
+          : [`${VERCEL_PROXY_PREFIX}?path=stream&id=${iptv.id}`],
       },
     ],
     active: true,
