@@ -52,9 +52,9 @@ async function scrapeESPNStandings() {
         
         // Upsert team
         const team = await prisma.team.upsert({
-          where: { apiId: teamData.id },
+          where: { apiId: parseInt(teamData.id) },
           update: { name: teamData.displayName, logo: teamData.logos?.[0]?.href || null },
-          create: { apiId: teamData.id, name: teamData.displayName, logo: teamData.logos?.[0]?.href || null, leagueId: league.id },
+          create: { apiId: parseInt(teamData.id), name: teamData.displayName, logo: teamData.logos?.[0]?.href || null, leagueId: league.id },
         });
         
         await prisma.standing.upsert({
@@ -97,14 +97,14 @@ async function scrapeESPNMatches() {
         if (!homeTeam || !awayTeam) continue;
         
         const home = await prisma.team.upsert({
-          where: { apiId: homeTeam.id },
+          where: { apiId: parseInt(homeTeam.id) },
           update: { name: homeTeam.team.displayName, logo: homeTeam.team.logos?.[0]?.href || null, leagueId: league.id },
-          create: { apiId: homeTeam.id, name: homeTeam.team.displayName, logo: homeTeam.team.logos?.[0]?.href || null, leagueId: league.id },
+          create: { apiId: parseInt(homeTeam.id), name: homeTeam.team.displayName, logo: homeTeam.team.logos?.[0]?.href || null, leagueId: league.id },
         });
         const away = await prisma.team.upsert({
-          where: { apiId: awayTeam.id },
+          where: { apiId: parseInt(awayTeam.id) },
           update: { name: awayTeam.team.displayName, logo: awayTeam.team.logos?.[0]?.href || null, leagueId: league.id },
-          create: { apiId: awayTeam.id, name: awayTeam.team.displayName, logo: awayTeam.team.logos?.[0]?.href || null, leagueId: league.id },
+          create: { apiId: parseInt(awayTeam.id), name: awayTeam.team.displayName, logo: awayTeam.team.logos?.[0]?.href || null, leagueId: league.id },
         });
         
         // Determine status
@@ -128,7 +128,7 @@ async function scrapeESPNMatches() {
         } else {
           await prisma.match.create({
             data: {
-              apiId: event.id,
+              apiId: parseInt(event.id),
               status, homeTeamId: home.id, awayTeamId: away.id,
               homeScore, awayScore, date, leagueId: league.id,
               minute: competition.status?.period || 0,
