@@ -3,6 +3,31 @@
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import worldCupData from "@/worldcup-2026-data.json";
+
+const flagMap: Record<string, string> = {
+  "us":"🇺🇸","pt":"🇵🇹","kr":"🇰🇷","gh":"🇬🇭","ar":"🇦🇷","fr":"🇫🇷","dk":"🇩🇰","au":"🇦🇺",
+  "gb-eng":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","nl":"🇳🇱","sn":"🇸🇳","ec":"🇪🇨","de":"🇩🇪","es":"🇪🇸","jp":"🇯🇵","cm":"🇨🇲",
+  "br":"🇧🇷","hr":"🇭🇷","ch":"🇨🇭","sa":"🇸🇦","be":"🇧🇪","ma":"🇲🇦","rs":"🇷🇸","ca":"🇨🇦",
+  "it":"🇮🇹","mx":"🇲🇽","pl":"🇵🇱","tn":"🇹🇳","uy":"🇺🇾","ng":"🇳🇬","se":"🇸🇪","ir":"🇮🇷",
+  "co":"🇨🇴","eg":"🇪🇬","py":"🇵🇾","iq":"🇮🇶","cl":"🇨🇱","dz":"🇩🇿","cz":"🇨🇿","nz":"🇳🇿",
+  "ci":"🇨🇮","gb-wls":"🏴󠁧󠁢󠁷󠁬󠁳󠁿","no":"🇳🇴","qa":"🇶🇦","tr":"🇹🇷","ru":"🇷🇺","gb-sct":"🏴󠁧󠁢󠁳󠁣󠁴󠁿","jm":"🇯🇲",
+};
+
+function buildGroups() {
+  return (worldCupData as any[]).map((g: any) => ({
+    name: "المجموعة " + g.name,
+    teams: g.teams.map((t: any, i: number) => {
+      const pts = Math.max(1, 6 - i * 2);
+      const won = Math.floor(pts / 3);
+      const drawn = pts - won * 3;
+      const lost = 3 - won - drawn;
+      const gf = won * 2 + drawn + i;
+      const ga = lost * 2 + 3 - i;
+      return { name: t.nameAr, flag: flagMap[t.flag] || "🏳", played: 3, won, drawn, lost, gf, ga, pts };
+    }),
+  }));
+}
 
 interface GroupTeam {
   name: string;
@@ -21,62 +46,7 @@ interface GroupData {
   teams: GroupTeam[];
 }
 
-const mockGroups: GroupData[] = [
-  {
-    name: "المجموعة A",
-    teams: [
-      { name: "قطر", flag: "🇶🇦", played: 3, won: 2, drawn: 1, lost: 0, gf: 5, ga: 2, pts: 7 },
-      { name: "هولندا", flag: "🇳🇱", played: 3, won: 2, drawn: 0, lost: 1, gf: 4, ga: 3, pts: 6 },
-      { name: "السنغال", flag: "🇸🇳", played: 3, won: 1, drawn: 1, lost: 1, gf: 3, ga: 3, pts: 4 },
-      { name: "الإكوادور", flag: "🇪🇨", played: 3, won: 0, drawn: 0, lost: 3, gf: 1, ga: 5, pts: 0 },
-    ],
-  },
-  {
-    name: "المجموعة B",
-    teams: [
-      { name: "إنجلترا", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", played: 3, won: 2, drawn: 1, lost: 0, gf: 6, ga: 2, pts: 7 },
-      { name: "الولايات المتحدة", flag: "🇺🇸", played: 3, won: 1, drawn: 2, lost: 0, gf: 3, ga: 1, pts: 5 },
-      { name: "إيران", flag: "🇮🇷", played: 3, won: 1, drawn: 0, lost: 2, gf: 2, ga: 4, pts: 3 },
-      { name: "ويلز", flag: "🏴󠁧󠁢󠁷󠁬󠁳󠁿", played: 3, won: 0, drawn: 1, lost: 2, gf: 1, ga: 5, pts: 1 },
-    ],
-  },
-  {
-    name: "المجموعة C",
-    teams: [
-      { name: "الأرجنتين", flag: "🇦🇷", played: 3, won: 3, drawn: 0, lost: 0, gf: 7, ga: 1, pts: 9 },
-      { name: "بولندا", flag: "🇵🇱", played: 3, won: 1, drawn: 1, lost: 1, gf: 3, ga: 3, pts: 4 },
-      { name: "المكسيك", flag: "🇲🇽", played: 3, won: 1, drawn: 0, lost: 2, gf: 2, ga: 4, pts: 3 },
-      { name: "السعودية", flag: "🇸🇦", played: 3, won: 0, drawn: 1, lost: 2, gf: 2, ga: 6, pts: 1 },
-    ],
-  },
-  {
-    name: "المجموعة D",
-    teams: [
-      { name: "فرنسا", flag: "🇫🇷", played: 3, won: 2, drawn: 1, lost: 0, gf: 5, ga: 2, pts: 7 },
-      { name: "الدنمارك", flag: "🇩🇰", played: 3, won: 1, drawn: 2, lost: 0, gf: 3, ga: 1, pts: 5 },
-      { name: "تونس", flag: "🇹🇳", played: 3, won: 1, drawn: 0, lost: 2, gf: 2, ga: 4, pts: 3 },
-      { name: "أستراليا", flag: "🇦🇺", played: 3, won: 0, drawn: 1, lost: 2, gf: 1, ga: 4, pts: 1 },
-    ],
-  },
-  {
-    name: "المجموعة E",
-    teams: [
-      { name: "إسبانيا", flag: "🇪🇸", played: 3, won: 2, drawn: 0, lost: 1, gf: 6, ga: 3, pts: 6 },
-      { name: "ألمانيا", flag: "🇩🇪", played: 3, won: 1, drawn: 1, lost: 1, gf: 4, ga: 4, pts: 4 },
-      { name: "اليابان", flag: "🇯🇵", played: 3, won: 1, drawn: 1, lost: 1, gf: 3, ga: 3, pts: 4 },
-      { name: "كوستاريكا", flag: "🇨🇷", played: 3, won: 1, drawn: 0, lost: 2, gf: 2, ga: 5, pts: 3 },
-    ],
-  },
-  {
-    name: "المجموعة F",
-    teams: [
-      { name: "البرازيل", flag: "🇧🇷", played: 3, won: 3, drawn: 0, lost: 0, gf: 8, ga: 1, pts: 9 },
-      { name: "سويسرا", flag: "🇨🇭", played: 3, won: 1, drawn: 1, lost: 1, gf: 2, ga: 3, pts: 4 },
-      { name: "الكاميرون", flag: "🇨🇲", played: 3, won: 1, drawn: 0, lost: 2, gf: 2, ga: 5, pts: 3 },
-      { name: "صربيا", flag: "🇷🇸", played: 3, won: 0, drawn: 1, lost: 2, gf: 2, ga: 5, pts: 1 },
-    ],
-  },
-];
+const mockGroups: GroupData[] = buildGroups();
 
 export function WorldCupGroups() {
   return (
